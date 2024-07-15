@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-title {
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .main-container {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .mini-container {
+            background-color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            height: 200px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .mini-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .text-info {
+            color: #343a40;
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .back-button {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 10%;
+            left: 46%;
+        }
+        .back-button:hover {
+            background-color: #212529;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 class="header-title">Admin Panel</h1>
+</header>
+<a href="/" class="back-button">Вернуться</a>
+
+
+<section>
+    <div class="main-container">
+        <div class="container">
+            <a href="/admin/add-book" class="mini-container">
+                <div class="text-info">
+                    Добавить книгу
+                </div>
+            </a>
+            <a href="/admin/bookDetails" class="mini-container">
+                <div class="text-info">
+                    Удалить, изменить книгу
+                </div>
+            </a>
+            <a href="/admin/loadAddProduct" class="mini-container">
+                <div class="text-info">
+                    Добавить админа
+                </div>
+            </a>
+            <a href="/admin/users" class="mini-container">
+                <div class="text-info">
+                    Все заказы
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+<footer>
+    <p>&copy; 2024 Book Store.</p>
+</footer>
+</body>
+</html>

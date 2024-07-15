@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.name}">Book Details</title>
+    <script>
+        function addToCart(personId, bookId, csrfToken) {
+            fetch(`/add-order_${personId}&${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data === "Item added to cart") {
+                    let button = document.getElementById('cartButton');
+                    button.innerText = "Перейти в корзину";
+                    button.setAttribute('onclick', "window.location.href='/cart'");
+                    button.classList.add('go-to-cart'); // Добавляем класс для плавного перехода
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            document.getElementById('cartButton').addEventListener('click', function() {
+                const personId = this.getAttribute('data-person-id');
+                const bookId = this.getAttribute('data-book-id');
+                addToCart(personId, bookId, csrfToken);
+            });
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .header-title {
+            margin: 0;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding-left:300px;
+            padding-right:300px;
+        }
+
+        .book-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .book-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .book-author {
+            font-size: 18px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .book-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .book-content img {
+            width: 442px;
+            height: 600px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-annotation {
+
+        }
+
+        .book-detail {
+            display: flex;
+            font-family: calibri;
+            font-size: 18px;
+            flex-wrap: nowrap;
+            align-items: center;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .book-detail .label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .book-details {
+            margin-top:20px;
+            padding-bottom: 20px;
+            margin-left: 280px;
+            margin-right: 280px;
+        }
+
+        .book-item{
+            font-family: calibri;
+            font-size: 18px;
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .scroll-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .scroll-button:hover {
+            background-color: #555;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Ensure the page scrolls and the footer is visible */
+        html, body {
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            width: fit-content;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+            margin: 4px auto; /* Центрирование кнопки */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .back-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: fit-content;
+            margin: 0 auto 20px auto; /* Центрирование кнопки */
+        }
+
+        .back-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .button.go-to-cart {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2 class="header-title">Book Details</h2>
+</header>
+
+<div class="container">
+    <a href="/" class="back-button">Вернуться к каталогу</a>
+
+    <div class="book-header">
+        <div class="book-title" th:text="${book.name}">Название</div>
+        <div class="book-author" th:text="${book.author}">Автор</div>
+    </div>
+    <div class="book-rating" style="display: flex; justify-content: center; align-items:center; margin-bottom:10px">
+        <img style="width:60px; height:auto; bottom: 0;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
+        <img style="width:60px; height:auto; bottom: 0;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
+        <img style="width:60px; height:auto; bottom: 0;" th:if="${book.rating > 6.66}" th:src="@{/images/excellent_smile.png}">
+        <span th:text="${book.rating}">Annotation</span>
+    </div>
+    <div class="book-content">
+        <img th:src="${book.url}" alt="Book Cover">
+        <div class="book-annotation">
+            <div class="book-detail"><span class="label">Аннотация:</span>
+                <span th:text="${book.annotation}">Annotation</span></div>
+        </div>
+    </div>
+
+    <div class="book-details">
+        <div class="book-item"><span class="label">Язык:</span> <span th:text="${book.language}">Language</span></div>
+        <div class="book-item"><span class="label">Издательство:</span> <span th:text="${book.publisher}">Publisher</span></div>
+        <div class="book-item"><span class="label">Год издания:</span> <span th:text="${book.year}">Year</span></div>
+        <div class="book-item"><span class="label">Жанр:</span> <span th:text="${book.genre}">Genre</span></div>
+        <div class="book-item"><span class="label">ISBN:</span> <span th:text="${book.ISBN}">ISBN</span></div>
+        <div class="book-item"><span class="label">Цена:</span> <span th:text="${book.price}">Price</span></div>
+        <div class="book-item"><span class="label">Количество страниц:</span> <span th:text="${book.pageCount}">Page Count</span></div>
+        <div class="book-item"><span class="label">Рейтинг:</span> <span th:text="${book.rating}">Rating</span></div>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        <button id="cartButton"
+                class="button"
+                th:data-person-id="${person_id}"
+                th:data-book-id="${book.getId()}">
+            Добавить в корзину
+        </button>
+    </div>
+    <div sec:authorize="isAnonymous()">
+        <a th:href="@{/login(referer=${referer})}" class="button">Войти, чтобы добавить в корзину</a>
+    </div>
+
+</div>
+
+
+</body>
+</html>

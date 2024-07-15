@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>add book</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .form-input {
+            margin-bottom: 10px;
+            width: 300px;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+        }
+         .error {
+            border-color: red;
+        }
+
+
+        .form-label {
+            margin-bottom: 5px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-error {
+            color: red;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            position: relative;
+        }
+
+        .form-error-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 400px;
+        }
+
+        .form-error-container .form-error {
+            position: absolute;
+            left: 320px;
+        }
+        .success-message {
+            margin-top: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .catalog-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .catalog-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div th:if="${postCorrect == true}" class="success-message">
+    <div>Книга успешно добавлена</div>
+</div>
+
+<a href="/admin/bookDetails" class="catalog-button">Вернуться</a>
+<form th:method="PATCH" th:action="@{/admin/{id}/edit(id=${book.getId()})}" th:object="${book}">
+    <div class="form-group">
+        <label class="form-label" for="url">url:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{url}" id="url"th:classappend="${#fields.hasErrors('url')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('url')}" th:text="${#fields.errors('url').get(#fields.errors('url').size() - 1)}" ></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="name">Название:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{name}" id="name"th:classappend="${#fields.hasErrors('name')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name').get(#fields.errors('name').size() - 1)}" ></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="author">Автор:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{author}" id="author"th:classappend="${#fields.hasErrors('author')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('author')}" th:text="${#fields.errors('author').get(#fields.errors('author').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="language">Язык:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{language}" id="language"th:classappend="${#fields.hasErrors('language')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('language')}" th:text="${#fields.errors('language').get(#fields.errors('language').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="publisher">Издательство:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{publisher}" id="publisher"th:classappend="${#fields.hasErrors('publisher')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('publisher')}" th:text="${#fields.errors('publisher').get(#fields.errors('publisher').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="year">Год:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{year}" id="year" th:classappend="${#fields.hasErrors('year')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('year')}" th:text="${#fields.errors('year').get(#fields.errors('year').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="genre">Жанр:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{genre}" id="genre"th:classappend="${#fields.hasErrors('genre')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('genre')}" th:text="${#fields.errors('genre').get(#fields.errors('genre').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="ISBN">ISBN:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{ISBN}" id="ISBN"th:classappend="${#fields.hasErrors('ISBN')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('ISBN')}" th:text="${#fields.errors('ISBN').get(#fields.errors('ISBN').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="price">Цена:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{price}" id="price"th:classappend="${#fields.hasErrors('price')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('price')}" th:text="${#fields.errors('price').get(#fields.errors('price').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="pageCount">Количество страниц:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{pageCount}" id="pageCount" th:classappend="${#fields.hasErrors('pageCount')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('pageCount')}" th:text="${#fields.errors('pageCount').get(#fields.errors('pageCount').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="annotation">Аннотация:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{annotation}" id="annotation"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="rating">Рейтинг:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{rating}" id="rating" th:classappend="${#fields.hasErrors('rating')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('rating')}" th:text="${#fields.errors('rating').get(#fields.errors('rating').size() - 1)}"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="novelty">Новинка:</label>
+        <div class="form-error-container">
+            <select class="form-input" th:field="*{novelty}" id="novelty">
+                <option th:value="true" th:text="true">true</option>
+                <option th:value="false" th:text="false">false</option>
+            </select>
+            <div class="form-error" th:if="${#fields.hasErrors('novelty')}" th:errors="*{novelty}"></div>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <label class="form-label" for="quantity">Количество на складе:</label>
+        <div class="form-error-container">
+            <input class="form-input" type="text" th:field="*{quantity}" id="quantity" th:classappend="${#fields.hasErrors('quantity')} ? 'error' : 'form-input'"/>
+            <div class="form-error" th:if="${#fields.hasErrors('quantity')}" th:text="${#fields.errors('quantity').get(#fields.errors('quantity').size() - 1)}"></div>
+        </div>
+    </div>
+    <input class="catalog-button" type="submit" value="Обновить книгу"/>
+</form>
+
+</body>
+</html>

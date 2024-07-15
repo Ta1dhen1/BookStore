@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+         header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-title {
+            margin: 0;
+        }
+        .container {
+            padding: 100px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0 auto !important;
+        }
+        .book-item {
+            width: 220px;
+            height: 265px;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+        .book-item img {
+            width: 100px;
+            height: auto;
+            object-fit: cover;
+        }
+        .book-title {
+            margin-top: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .book-author {
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .book-actions {
+            display: flex;
+            width: 100%;
+            flex-direction: row-reverse;
+        }
+        .action-button {
+            background-color: #343a40;
+            border: none;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 32px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.8em;
+            transition: background-color 0.15s;
+            width: 40%;
+        }
+        input[type="submit"] {
+            background-color: #7E56C8;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .add-book-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+
+        }
+        .add-book-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+        .back-button {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 10%;
+            left: 45%;
+        }
+        .back-button:hover {
+            background-color: #212529;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 class="header-title">Список книг</h1>
+    <a href="/admin/" class="add-book-button">Панель админа</a>
+</header>
+<a href="javascript:history.back()" class="back-button">Вернуться назад</a>
+<div class="container">
+    <th:block th:each="book : ${bookList}">
+        <div class="book-item">
+            <img th:src="${book.url}" alt="Book Cover">
+            <div class="book-title" th:text="${book.name}">Название книги</div>
+            <div class="book-author" th:text="${book.author}">Автор книги</div>
+            <div class="book-actions">
+                <a style="margin-left:20px;" th:href="@{/admin/{id}/edit(id=${book.getId()})}" class="action-button">Edit</a>
+                <form class="action-button" th:method="DELETE" th:action="@{/admin/{id}(id=${book.getId()})}">
+                    <input style="background-color: #343a40;
+                    border: none;
+                    color: white;
+                    border-radius: 32px;
+                    cursor: pointer;
+                    text-decoration: none;
+                    transition: background-color 0.15s;"
+                           type="submit" value="Delete"/>
+                </form>
+            </div>
+        </div>
+    </th:block>
+</div>
+<footer>
+    <p>&copy; 2024 Book Store.</p>
+</footer>
+</body>
+</html>

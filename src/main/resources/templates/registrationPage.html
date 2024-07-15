@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .header-title {
+            margin: 0;
+        }
+        .container {
+            padding: 120px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0 auto !important;
+        }
+        .content-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .image-col, .form-col {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .image-col img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .form-col .card {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f8f9fa;
+        }
+        .card-header {
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .form-label {
+            margin-bottom: 10px;
+            display: block;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 32px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.15s;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background-color: #212529;
+        }
+        .card-footer {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+        .card-footer a {
+            color: #343a40;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .card-footer a:hover {
+            color: #212529;
+        }
+        .form-error {
+            color: red;
+<!--            margin-left: 10px;-->
+            white-space: nowrap;
+            padding-bottom: 10px;
+        }
+        .error {
+        border-color: red;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+<section>
+
+<div class="container">
+        <div class="content-row">
+            <div class="form-col">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="fs-4 text-center">Регистрация</p>
+                    </div>
+                        <div class="card-body">
+                            <form action="/process_registration" method="post" th:object="${person}">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <label class="form-label">Логин</label>
+                            <input class="form-control" type="text" th:field="*{username}" id="username" th:classappend="${#fields.hasErrors('username')} ? 'error' : 'form-input'"/>
+                                <div class="form-error" th:if="${#fields.hasErrors('username')}" th:text="${#fields.errors('username').get(#fields.errors('username').size() - 1)}" ></div>
+                                <label class="form-label">Пароль</label>
+                                <input class="form-control" type="text" th:field="*{password}" id="password"/>
+
+                                <button type="submit" class="btn">Зарегестрироваться</button>
+                            </form>
+
+                        </div>
+           </div>
+        </div>
+        </div>
+</div>
+</section>
+</body>
+</html>
