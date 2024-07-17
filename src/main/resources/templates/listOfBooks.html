@@ -260,17 +260,17 @@
     <th:block th:each="book : ${bookList}">
         <div class="book-item" style="text-decoration:none; color: #333">
             <a style="text-decoration:none; color:#333;" th:href="@{/{id}(id=${book.id})}" >
-            <div class="new-icon">
-                <img th:src="${book.url}" alt="Book Cover" class="url-class">
-                <img th:if="${book.novelty}" th:src="@{/images/new.png}" class="new-icon1">
-                <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
-                <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
-                <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 6.66}" th:src="@{/images/excellent_smile.png}">
-            </div>
-            <div class="book-info">
-                <div class="label"><span class="label"></span> <span th:text="${book.name}"></span></div>
-                <div class="label" style="color: #B5B8B1;"><span class="label"></span> <span th:text="${book.author}"></span></div>
-            </div>
+                <div class="new-icon">
+                    <img th:src="${book.url}" alt="Book Cover" class="url-class">
+                    <img th:if="${book.novelty}" th:src="@{/images/new.png}" class="new-icon1">
+                    <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
+                    <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
+                    <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 6.66}" th:src="@{/images/excellent_smile.png}">
+                </div>
+                <div class="book-info">
+                    <div class="label"><span class="label"></span> <span th:text="${book.name}"></span></div>
+                    <div class="label" style="color: #B5B8B1;"><span class="label"></span> <span th:text="${book.author}"></span></div>
+                </div>
             </a>
             <div class="price">
                 <span style="bottom:0;" th:text="${book.price}"></span>

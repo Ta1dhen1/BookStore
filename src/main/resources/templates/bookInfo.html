@@ -23,20 +23,27 @@
                 if (data === "Item added to cart") {
                     let button = document.getElementById('cartButton');
                     button.innerText = "Перейти в корзину";
-                    button.setAttribute('onclick', "window.location.href='/cart'");
                     button.classList.add('go-to-cart');
+                    // Удаляем слушатель события клика
+                    button.removeEventListener('click', addToCartClickListener);
+                    // Добавляем новый слушатель, который просто перенаправляет на корзину
+                    button.addEventListener('click', () => {
+                        window.location.href = '/cart';
+                    });
                 }
             })
             .catch(error => console.error('Error:', error));
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        function addToCartClickListener() {
             const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            document.getElementById('cartButton').addEventListener('click', function() {
-                const personId = this.getAttribute('data-person-id');
-                const bookId = this.getAttribute('data-book-id');
-                addToCart(personId, bookId, csrfToken);
-            });
+            const personId = this.getAttribute('data-person-id');
+            const bookId = this.getAttribute('data-book-id');
+            addToCart(personId, bookId, csrfToken);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('cartButton').addEventListener('click', addToCartClickListener);
         });
     </script>
     <style>
