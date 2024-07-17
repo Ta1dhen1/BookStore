@@ -259,6 +259,7 @@
 <div class="container">
     <th:block th:each="book : ${bookList}">
         <div class="book-item" style="text-decoration:none; color: #333">
+            <a style="text-decoration:none; color:#333;" th:href="@{/{id}(id=${book.id})}" >
             <div class="new-icon">
                 <img th:src="${book.url}" alt="Book Cover" class="url-class">
                 <img th:if="${book.novelty}" th:src="@{/images/new.png}" class="new-icon1">
@@ -270,6 +271,7 @@
                 <div class="label"><span class="label"></span> <span th:text="${book.name}"></span></div>
                 <div class="label" style="color: #B5B8B1;"><span class="label"></span> <span th:text="${book.author}"></span></div>
             </div>
+            </a>
             <div class="price">
                 <span style="bottom:0;" th:text="${book.price}"></span>
                 <img style="height:30px; width:auto; margin-left:20px;" th:src="@{/images/price-tag.png}" alt="">
