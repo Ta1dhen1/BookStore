@@ -37,7 +37,10 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String listOfBooks(Model model) {
+    public String listOfBooks(Model model, Authentication authentication) {
+        if (authentication != null) {
+            model.addAttribute("person_id", personService.getPerson(authentication.getName()).get().getId());
+        }
         model.addAttribute("bookList", bookService.findAll());
         return "listOfBooks";
     }
@@ -49,8 +52,8 @@ public class MainController {
             Person person = personService.getPerson(name).get();
             model.addAttribute("person_id", person.getId());
         }
-            model.addAttribute("book", bookService.findOne(id));
-            model.addAttribute("referer", request.getRequestURI());
+        model.addAttribute("book", bookService.findOne(id));
+        model.addAttribute("referer", request.getRequestURI());
         return "bookInfo";
     }
 
@@ -75,7 +78,7 @@ public class MainController {
         return "redirect:/login?registration";
     }
 
-//    @GetMapping("/cart")
+    //    @GetMapping("/cart")
 //    public String listOfOrders(Model model) {
 //        model.addAttribute("ordersList", cartService.findAll());
 //        return "orders";

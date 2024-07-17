@@ -133,41 +133,41 @@
 <body>
 <section>
     <form th:action="@{/login}" method="post">
-    <div class="container">
-        <div class="content-row">
-            <!--            <div class="image-col">-->
-            <!--                <img alt="" src="img/ecom.png">-->
-            <!--            </div>-->
-            <div class="form-col">
-                <div class="card">
-                    <div class="card-header">
-                        <p class="fs-4 text-center">Вход</p>
+        <div class="container">
+            <div class="content-row">
+                <div class="form-col">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="fs-4 text-center">Вход</p>
 
-                        <div th:if="${param.registration}" class="alert alert-success">
-                            Вы успешно зарегестрировались.
-                        </div>
-                        <div th:if="${param.error}" class="alert alert-danger">
-                            Неправильное имя пользователя или пароль.
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form action="/login" method="post">
-                            <label class="form-label">Логин</label>
-                            <input class="form-control" id="username" name="username">
-                            <label class="form-label">Пароль</label>
-                            <input class="form-control" type="password" id="password"
-                                   name="password">
-                            <div>
-                                <input type="hidden" name="referer" th:value="${param.referer}" />
+                            <div th:if="${param.registration}" class="alert alert-success">
+                                Вы успешно зарегестрировались.
                             </div>
+                            <div th:if="${param.error}" class="alert alert-danger">
+                                Неправильное имя пользователя или пароль.
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form action="/login" method="post">
+                                <label class="form-label">Логин</label>
+                                <input class="form-control" id="username" name="username">
+                                <label class="form-label">Пароль</label>
+                                <input class="form-control" type="password" id="password"
+                                       name="password">
+                                <div>
+                                    <input type="hidden" name="referer" th:value="${param.referer}" />
+                                </div>
 
-                            <button type="submit" class="btn">Войти</button>
-                        </form>
+                                <button type="submit" class="btn">Войти</button>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <span>Еще не зарегистрированы? </span><a href="/registration"> <button type="submit" class="btn" style="margin-top:10px;">Зарегистрироваться</button></a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div></form>
+        </div></form>
 </section>
 
 </body>

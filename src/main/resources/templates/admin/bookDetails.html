@@ -25,9 +25,10 @@
         }
         .container {
             padding: 100px 20px;
+            margin-left: 100px;
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start
             margin: 0 auto !important;
         }
         .book-item {
@@ -87,7 +88,6 @@
             color: white;
             text-align: center;
             padding: 5px 0;
-            position: fixed;
             width: 100%;
             bottom: 0;
         }
@@ -133,7 +133,7 @@
     <h1 class="header-title">Список книг</h1>
     <a href="/admin/" class="add-book-button">Панель админа</a>
 </header>
-<a href="javascript:history.back()" class="back-button">Вернуться назад</a>
+<a href="/admin/" class="back-button">Вернуться назад</a>
 <div class="container">
     <th:block th:each="book : ${bookList}">
         <div class="book-item">

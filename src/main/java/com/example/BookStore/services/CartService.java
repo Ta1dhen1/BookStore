@@ -6,6 +6,7 @@ import com.example.BookStore.providers.Person;
 import com.example.BookStore.repositories.BookRepository;
 import com.example.BookStore.repositories.CartRepository;
 import com.example.BookStore.repositories.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -95,5 +96,10 @@ public class CartService {
     }
     public List<Cart> getAllcarts(String personRole){
         return cartRepository.findAllByPersonRole(personRole);
+    }
+
+    @Transactional
+    public void deleteAll(int id) {
+        cartRepository.deleteAllByBookId(id);
     }
 }

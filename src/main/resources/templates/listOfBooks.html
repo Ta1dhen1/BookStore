@@ -35,8 +35,6 @@
             right: 20px;
             top: 60px;
             background-color: #343a40;
-            border: 1px solid #ddd;
-            border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: none;
             flex-direction: column;
@@ -60,7 +58,6 @@
             margin-left: 80px;
             margin-right: 80px;
         }
-
         .book-item {
             background-color: white;
             border: 1px solid #ddd;
@@ -93,11 +90,9 @@
             color: white;
             text-align: center;
             padding: 5px 0;
-            position: fixed;
             width: 100%;
             bottom: 0;
         }
-
         .add-book-button {
             background-color: white;
             color: #343a40;
@@ -118,7 +113,6 @@
             color: #343a40;
             border: 2px solid #343a40;
             padding: 10px 20px;
-            text-align: center;
             text-decoration: none;
             font-size: 16px;
             cursor: pointer;
@@ -130,10 +124,10 @@
             background-color: #343a40;
             color: white;
         }
-        .new-icon{
+        .new-icon {
             position: relative;
         }
-        .new-icon1{
+        .new-icon1 {
             position: absolute;
             top: 0;
             right: 0;
@@ -155,20 +149,17 @@
             font-size: 30px;
             width: 200px;
             margin-left: 35px;
-
         }
         @media (max-width: 992px) {
             .book-item {
                 width: calc(33.33% - 20px);
             }
         }
-
         @media (max-width: 768px) {
             .book-item {
                 width: calc(50% - 20px);
             }
         }
-
         @media (max-width: 576px) {
             .book-item {
                 width: calc(100% - 20px);
@@ -214,6 +205,23 @@
             transition: all 0.3s ease;
             z-index: 1000;
         }
+        .button {
+            background-color: #343a40;
+            border: none;
+            color: white;
+            width: fit-content;
+            padding: 7px 32px;
+            text-decoration: none;
+            display: block;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -232,23 +240,27 @@
                 <div>
                     <a href="admin/" class="add-book-button">Панель админа</a>
                 </div>
+                <form th:action="@{/logout}" th:method="POST">
+                    <button type="submit" class="logout-button">Выйти</button>
+                </form>
             </div>
-            <form th:action="@{/logout}" th:method="POST">
-                <button type="submit" class="logout-button">Выйти</button>
-            </form>
+            <div sec:authorize="hasRole('ROLE_USER')">
+                <a href="/" class="logout-button" style="width:47px; background-color: #343a40; color:white;">Главная</a>
+                <a href="/cart" class="logout-button" style="width:47px">Корзина</a>
+                <a href="/my-orders" class="logout-button" style="width:47px">Заказы</a>
+                <form th:action="@{/logout}" th:method="POST">
+                    <button type="submit" class="logout-button">Выйти</button>
+                </form>
+            </div>
         </div>
     </div>
 </header>
-
+...
 <div class="container">
     <th:block th:each="book : ${bookList}">
-        <a class="book-item" th:href="@{/{id}(id=${book.id})}" style="text-decoration:none; color: #333">
-<!--            <div class="d1" th:if="${book.quantity < 10}">-->
-<!--                <img th:src="@{/images/fire.png}">-->
-<!--            </div>-->
+        <div class="book-item" style="text-decoration:none; color: #333">
             <div class="new-icon">
                 <img th:src="${book.url}" alt="Book Cover" class="url-class">
-
                 <img th:if="${book.novelty}" th:src="@{/images/new.png}" class="new-icon1">
                 <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
                 <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
@@ -258,21 +270,67 @@
                 <div class="label"><span class="label"></span> <span th:text="${book.name}"></span></div>
                 <div class="label" style="color: #B5B8B1;"><span class="label"></span> <span th:text="${book.author}"></span></div>
             </div>
-
             <div class="price">
                 <span style="bottom:0;" th:text="${book.price}"></span>
                 <img style="height:30px; width:auto; margin-left:20px;" th:src="@{/images/price-tag.png}" alt="">
+                <div style="position:absolute; bottom:2px; right:-70px; z-index: 9999" sec:authorize="hasRole('USER')">
+                    <meta name="_csrf" th:content="${_csrf.token}"/>
+                    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+                    <button class="button cartButton" style="width:120px;"
+                            th:data-person-id="${person_id}"
+                            th:data-book-id="${book.id}">
+                        В корзину
+                    </button>
+                </div>
             </div>
-        </a>
+        </div>
     </th:block>
 </div>
+
 <div sec:authorize="hasRole('USER')">
-    <a href="/cart" class="fixed-cart-button"><i class="gg-shopping-cart"></i></a></div>
+    <a href="/cart" class="fixed-cart-button"><i class="gg-shopping-cart"></i></a>
+</div>
 <footer>
     <p>&copy; 2024 Book Store.</p>
 </footer>
-
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const cartButtons = document.querySelectorAll('.cartButton');
+
+        cartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const personId = this.getAttribute('data-person-id');
+                const bookId = this.getAttribute('data-book-id');
+                addToCart(personId, bookId, csrfToken, this);
+            });
+        });
+    });
+
+    function addToCart(personId, bookId, csrfToken, button) {
+        fetch(`/add-order/${personId}/${bookId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.text();
+        })
+        .then(data => {
+            if (data === "Item added to cart") {
+                button.innerText = "Перейти в корзину";
+                button.setAttribute('onclick', "window.location.href='/cart'");
+                button.classList.add('go-to-cart');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
     function toggleMenu() {
         const menu = document.getElementById('dropdownMenu');
         if (menu.style.display === 'flex') {
@@ -281,7 +339,7 @@
             menu.style.display = 'flex';
         }
     }
-</script>
 
+</script>
 </body>
 </html>

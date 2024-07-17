@@ -1,33 +1,203 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мои заказы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+         header {
+            background-color: #343a40;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .header-title {
+            margin: 0;
+        }
+        .container {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            margin-top: 80px;
+            max-width: 800px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+            text-transform: uppercase;
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        ul {
+            padding-left: 20px;
+            margin: 0;
+            list-style-type: none;
+        }
+        ul li {
+            padding: 5px 0;
+        }
+        .date-time {
+            display: flex;
+            flex-direction: column;
+        }
+        .date-time p {
+            margin: 0;
+            color: #343a40;
+            font-weight: bold;
+        }
+        .date-label {
+            color: #777;
+            font-weight: normal;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            bottom: 0;
+        }
+        .menu-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .dropdown-menu {
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background-color: #343a40;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .user-info {
+            display: ruby;
+        }
+        .dropdown-menu a,
+        .dropdown-menu form {
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-menu a:hover,
+        .dropdown-menu form:hover {
+            background-color: #495057;
+        }
+.logout-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+        .logout-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-<h1>Мои заказы</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID заказа</th>
-        <th>Дата заказа</th>
-        <th>Общая стоимость</th>
-        <th>Детали заказа</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="order : ${orders}">
-        <td th:text="${order.id}"></td>
-        <td th:text="${order.orderDate}"></td>
-        <td th:text="${order.totalOrderPrice}"></td>
-        <td>
-            <ul>
-                <li th:each="item : ${order.orderItems}">
-                    <span th:text="${item.book.name}"></span> - <span th:text="${item.quantity}"></span> шт. по цене <span th:text="${item.totalPrice}"></span>
-                </li>
-            </ul>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<header>
+    <h1 class="header-title">Sber Book</h1>
+    <div class="user-info" sec:authorize="isAuthenticated()">
+        <div style="margin-right:20px" sec:authentication="name"></div>
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div sec:authorize="hasRole('ADMIN')">
+                <div>
+                    <a href="admin/" class="add-book-button">Панель админа</a>
+                </div>
+            </div>
+            <a href="/" class="logout-button" style="width:47px;">Главная</a>
+            <a href="/cart" class="logout-button" style="width:47px">Корзина</a>
+            <a href="/my-orders" class="logout-button" style="width:47px; background-color: #343a40; color:white;">Заказы</a>
+            <form th:action="@{/logout}" th:method="POST">
+                <button type="submit" class="logout-button">Выйти</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Дата заказа</th>
+            <th>Общая стоимость</th>
+            <th>Детали заказа</th>
+            <th>Статус заказа</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td>
+                <div class="date-time">
+                    <span class="date-label">Дата:</span>
+                    <span th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"></span>
+                    <span class="date-label">Время:</span>
+                    <span th:text="${#temporals.format(order.orderDate, 'HH:mm:ss')}"></span>
+                </div>
+            </td>
+            <td th:text="${order.totalOrderPrice}"></td>
+            <td>
+                <ul>
+                    <li th:each="item : ${order.orderItems}">
+                        <span th:text="${item.book.name}"></span> - <span th:text="${item.quantity}"></span> шт. по цене <span th:text="${item.totalPrice}"></span>
+                    </li>
+                </ul>
+            </td>
+            <td th:text="${order.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<footer>
+    <p>&copy; 2024 Book Store.</p>
+</footer>
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu.style.display === 'flex') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'flex';
+        }
+    }
+</script>
 </body>
 </html>

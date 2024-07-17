@@ -6,7 +6,7 @@
     <title th:text="${book.name}">Book Details</title>
     <script>
         function addToCart(personId, bookId, csrfToken) {
-            fetch(`/add-order/${personId}/${bookId}`, { // Изменено на новый формат URL
+            fetch(`/add-order/${personId}/${bookId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,8 +67,7 @@
             background-color: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            padding-left:300px;
-            padding-right:300px;
+            max-width: 1400px;
         }
 
         .book-header {
@@ -91,48 +90,43 @@
 
         .book-content {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            flex-direction: column;
             gap: 20px;
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .book-content img {
-            width: 442px;
-            height: 600px;
+            width: 300px;
+            height: auto;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .book-annotation {
-
+            flex-grow: 1;
         }
 
         .book-detail {
             display: flex;
             font-family: calibri;
             font-size: 18px;
-            flex-wrap: nowrap;
-            align-items: center;
             flex-direction: column;
-            justify-content: space-around;
         }
 
         .book-detail .label {
             margin-bottom: 10px;
             font-weight: bold;
             color: #333;
+
         }
 
         .book-details {
-            margin-top:20px;
-            padding-bottom: 20px;
-            margin-left: 280px;
-            margin-right: 280px;
+            margin-top: 20px;
         }
 
-        .book-item{
+        .book-item {
+            width:400px;
+
             font-family: calibri;
             font-size: 18px;
             display: flex;
@@ -175,7 +169,7 @@
         }
 
         .button {
-            background-color: #007bff;
+            background-color: #343a40;
             border: none;
             color: white;
             width: fit-content;
@@ -206,7 +200,7 @@
             transition: all 0.3s ease;
             display: block;
             width: fit-content;
-            margin: 0 auto 20px auto; /* Центрирование кнопки */
+            margin: 0 auto 20px auto;
         }
 
         .back-button:hover {
@@ -218,6 +212,7 @@
             background-color: #28a745;
             border-color: #28a745;
         }
+
     </style>
 </head>
 <body>
@@ -237,42 +232,46 @@
         <img style="width:60px; height:auto; bottom: 0;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
         <img style="width:60px; height:auto; bottom: 0;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
         <img style="width:60px; height:auto; bottom: 0;" th:if="${book.rating > 6.66}" th:src="@{/images/excellent_smile.png}">
-        <span th:text="${book.rating}">Annotation</span>
+        <span th:text="${book.rating}">Rating</span>
     </div>
     <div class="book-content">
         <img th:src="${book.url}" alt="Book Cover">
         <div class="book-annotation">
-            <div class="book-detail"><span class="label">Аннотация:</span>
-                <span th:text="${book.annotation}">Annotation</span></div>
+            <div class="book-detail">
+                <span class="label">Аннотация:</span>
+                <span th:text="${book.annotation}" style="margin-bottom:30px;">Annotation</span>
+                <div class="book-item"><span class="label">Язык:</span> <span th:text="${book.language}">Language</span></div>
+                <div class="book-item"><span class="label">Издательство:</span> <span th:text="${book.publisher}">Publisher</span></div>
+                <div class="book-item"><span class="label">Год издания:</span> <span th:text="${book.year}">Year</span></div>
+                <div class="book-item"><span class="label">Жанр:</span> <span th:text="${book.genre}">Genre</span></div>
+                <div class="book-item"><span class="label">ISBN:</span> <span th:text="${book.ISBN}">ISBN</span></div>
+                <div class="book-item"><span class="label">Цена:</span> <span th:text="${book.price}">Price</span></div>
+                <div class="book-item"><span class="label">Количество страниц:</span> <span th:text="${book.pageCount}">Page Count</span></div>
+                <div class="book-item"><span class="label">Рейтинг:</span> <span th:text="${book.rating}">Rating</span></div>
+            </div>
         </div>
     </div>
 
     <div class="book-details">
-        <div class="book-item"><span class="label">Язык:</span> <span th:text="${book.language}">Language</span></div>
-        <div class="book-item"><span class="label">Издательство:</span> <span th:text="${book.publisher}">Publisher</span></div>
-        <div class="book-item"><span class="label">Год издания:</span> <span th:text="${book.year}">Year</span></div>
-        <div class="book-item"><span class="label">Жанр:</span> <span th:text="${book.genre}">Genre</span></div>
-        <div class="book-item"><span class="label">ISBN:</span> <span th:text="${book.ISBN}">ISBN</span></div>
-        <div class="book-item"><span class="label">Цена:</span> <span th:text="${book.price}">Price</span></div>
-        <div class="book-item"><span class="label">Количество страниц:</span> <span th:text="${book.pageCount}">Page Count</span></div>
-        <div class="book-item"><span class="label">Рейтинг:</span> <span th:text="${book.rating}">Rating</span></div>
-    </div>
-    <div sec:authorize="isAuthenticated()">
-        <meta name="_csrf" th:content="${_csrf.token}"/>
-        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-        <button id="cartButton"
-                class="button"
-                th:data-person-id="${person_id}"
-                th:data-book-id="${book.getId()}">
-            Добавить в корзину
-        </button>
-    </div>
-    <div sec:authorize="isAnonymous()">
-        <a th:href="@{/login(referer=${referer})}" class="button">Войти, чтобы добавить в корзину</a>
+
     </div>
 
+    <div sec:authorize="hasRole('USER')">
+            <meta name="_csrf" th:content="${_csrf.token}"/>
+            <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+            <button id="cartButton"
+                    class="button"
+                    th:data-person-id="${person_id}"
+                    th:data-book-id="${book.getId()}">
+                Добавить в корзину
+            </button>
+        </div>
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login(referer=${referer})}" class="back-button">Войти, чтобы добавить в корзину</a>
+        </div>
 </div>
 
+<button class="scroll-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">!</button>
 
 </body>
 </html>

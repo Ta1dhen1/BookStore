@@ -52,6 +52,7 @@ public class OrderService {
 
         order.setTotalOrderPrice(totalOrderPrice);
         order.setOrderItems(orderItems);
+        order.setStatus("Оформлен");
 
         orderRepository.save(order);
         orderItemRepository.saveAll(orderItems);
@@ -64,6 +65,12 @@ public class OrderService {
 
     public List<Order> showAllOrders() {
         return orderRepository.findAllByOrderByOrderDateDesc();
+    }
+
+    public void updateOrderStatus(int orderId, String status) {
+        Order order = orderRepository.findById(orderId).get();
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 }
 

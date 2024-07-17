@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .header-title {
+            margin: 0;
+        }
+        .container {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            margin-top: 80px;
+            max-width: 800px;
+        }
+        .person-section {
+            width: 100%;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .person-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .cart-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+          .add-book-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .add-book-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+        .cart-item td {
+            padding: 10px;
+            vertical-align: top;
+        }
+        .cart-item ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .cart-item ul li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-item ul li .book-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .cart-item ul li .book-item img {
+            width: 50px;
+            height: 70px;
+            margin-right: 15px;
+            border: 1px solid grey;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .cart-item ul li .book-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-item ul li .book-title {
+            font-weight: bold;
+        }
+        .cart-item ul li .book-quantity {
+            color: #777;
+        }
+        .cart-item ul li .book-price {
+            color: #343a40;
+            font-weight: bold;
+        }
+        .cart-item .date-time {
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-item .date-time p {
+            margin: 0;
+            color: #343a40;
+            font-weight: bold;
+        }
+        .cart-item .date-label {
+            color: #777;
+            font-weight: normal;
+        }
+        .cart-item .order-status {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .cart-item .order-status select {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .cart-item .order-status button {
+            padding: 5px 10px;
+            background-color: #343a40;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .cart-item .order-status button:hover {
+            background-color: #495057;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            bottom: 0;
+        }
+        .menu-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .dropdown-menu {
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background-color: #343a40;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .dropdown-menu a,
+        .dropdown-menu form {
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-menu a:hover,
+        .dropdown-menu form:hover {
+            background-color: #495057;
+        }
+        .logout-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+        .logout-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 class="header-title">Sber Book</h1>
+    <div class="user-info" sec:authorize="isAuthenticated()">
+        <div style="margin-right:20px" sec:authentication="name"></div>
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div sec:authorize="hasRole('ADMIN')">
+                <div>
+                    <a href="admin/" class="add-book-button">Панель админа</a>
+                </div>
+            </div>
+            <form th:action="@{/logout}" th:method="POST">
+                <button type="submit" class="logout-button">Выйти</button>
+            </form>
+        </div>
+    </div>
+</header>
+<a href="/" class="back-button" style="position:relative; left:45%;">Вернуться назад</a>
+
+<div class="container">
+    <th:block th:each="entry : ${personOrdersMap}">
+        <div class="person-section">
+            <div class="person-name" th:text="${entry.key.username}"></div>
+            <th:block th:each="order : ${entry.value}">
+                <div class="cart-item">
+                    <div class="date-time">
+                        <p><span class="date-label">Дата:</span> <span th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"></span></p>
+                        <p><span class="date-label">Время:</span> <span th:text="${#temporals.format(order.orderDate, 'HH:mm:ss')}"></span></p>
+                    </div>
+                    <div>
+                        <strong>Стоимость: </strong><span th:text="${order.totalOrderPrice}"></span>
+                    </div>
+                    <div>
+                        <strong>Предметы заказа:</strong>
+                        <ul>
+                            <li th:each="item : ${order.orderItems}">
+                                <div class="book-item">
+                                    <img th:src="${item.book.url}" alt="Book Cover">
+                                    <div class="book-info">
+                                        <div class="book-title" th:text="${item.book.name}"></div>
+                                        <div class="book-quantity" th:text="'Количество: ' + ${item.quantity}"></div>
+                                        <div class="book-price" th:text="'Стоимость: ' + ${item.totalPrice}"></div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="order-status">
+                        <form th:action="@{/admin/updateOrderStatus}" th:method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}"/>
+                            <select name="status">
+                                <option value="Оформлен" th:selected="${order.status == 'Оформлен'}">Оформлен</option>
+                                <option value="В пути" th:selected="${order.status == 'В пути'}">В пути</option>
+                                <option value="Доставлен" th:selected="${order.status == 'Доставлен'}">Доставлен</option>
+                            </select>
+                            <button type="submit" class="quantity-button">Обновить</button>
+                        </form>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </th:block>
+</div>
+
+<footer>
+    Sber Book © 2024
+</footer>
+
+<script>
+    function toggleMenu() {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        if (dropdownMenu.style.display === 'block') {
+            dropdownMenu.style.display = 'none';
+        } else {
+            dropdownMenu.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,22 +14,20 @@
         header {
             background-color: #343a40;
             color: white;
-            padding: 10px 20px;
-            text-align: center;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            padding: 10px 20px;
         }
         .header-title {
             margin: 0;
-            text-transform: uppercase;
         }
         .container {
             padding: 30px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Центрирование по горизонтали */
-            justify-content: center; /* Центрирование по вертикали */
+            align-items: center;
+            justify-content: center;
             margin: 0 auto;
             margin-top: 80px;
             max-width: 800px;
@@ -43,7 +41,7 @@
             display: flex;
             align-items: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%; /* Занимать всю ширину контейнера */
+            width: 100%;
         }
         .cart-item img {
             display: block;
@@ -80,9 +78,7 @@
             gap: 10px;
             margin-top: 5px;
             margin-left: -40px;
-
             margin-right: 20px;
-
         }
         .quantity-button {
             background-color: #343a40;
@@ -92,7 +88,7 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.15s;
-            text-align: center; /* Центрирование текста */
+            text-align: center;
         }
         .quantity-button:hover {
             background-color: #212529;
@@ -116,19 +112,126 @@
             color: white;
             text-align: center;
             padding: 10px 0;
-            position: fixed;
             width: 100%;
             bottom: 0;
+        }
+        .btn {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 32px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.15s;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background-color: #212529;
+        }
+        .menu-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .dropdown-menu {
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background-color: #343a40;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .user-info {
+            display: ruby;
+        }
+        .dropdown-menu a,
+        .dropdown-menu form {
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-menu a:hover,
+        .dropdown-menu form:hover {
+            background-color: #495057;
+        }
+        .logout-button {
+            background-color: white;
+            color: #343a40;
+            border: 2px solid #343a40;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+        .logout-button:hover {
+            background-color: #343a40;
+            color: white;
+        }
+        .order-summary {
+            width: 100%;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .order-summary-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .order-summary-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .order-summary-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #343a40;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 <header>
     <h1 class="header-title">Sber Book</h1>
+    <div class="user-info" sec:authorize="isAuthenticated()">
+        <div style="margin-right:20px" sec:authentication="name"></div>
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div sec:authorize="hasRole('ADMIN')">
+                <div>
+                    <a href="admin/" class="add-book-button">Панель админа</a>
+                </div>
+            </div>
+            <a href="/" class="logout-button" style="width:47px;">Главная</a>
+            <a href="/cart" class="logout-button" style="width:47px; background-color: #343a40; color:white;">Корзина</a>
+            <a href="/my-orders" class="logout-button" style="width:47px">Заказы</a>
+            <form th:action="@{/logout}" th:method="POST">
+                <button type="submit" class="logout-button">Выйти</button>
+            </form>
+        </div>
+    </div>
 </header>
 
 <div class="container">
-
     <th:block th:each="order : ${orders}">
         <div class="cart-item">
             <img th:src="${order.book.url}" alt="Book Cover">
@@ -143,26 +246,40 @@
                 <a class="quantity-button" th:href="@{'/cartQuantityUpdate?sy=in&oId='+${order.id}}" style="color: white; text-decoration: none;">+</a>
             </div>
             <div class="total-price" th:text="${order.totalPrice}"></div>
-
-            <form class="action-button" th:method="POST" th:action="@{/cart}">
-            <input style="background-color: #343a40;
-                    border: none;
-                    color: white;
-                    border-radius: 32px;
-                    cursor: pointer;
-                    text-decoration: none;
-                    transition: background-color 0.15s;"
-                   type="submit" value="заказать"/>
-        </form>
         </div>
     </th:block>
 
-    <div>[[${totalOrderPrice}]]</div>
-    <a href="/my-orders">Мои заказы</a>
+    <div th:if="${#lists.isEmpty(orders)}">Ваша корзина пуста.</div>
+    <div th:if="${not #lists.isEmpty(orders)}">
+    <div class="order-summary">
+        <div class="order-summary-title">Общая стоимость заказа</div>
+        <div class="order-summary-detail">
+            <span>Товары:</span>
+            <span th:text="${totalOrderPrice}"></span>
+        </div>
+        <div class="order-summary-total" th:text="'Итого: ' + ${totalOrderPrice}"></div>
+    </div>
+    <div th:if="${not #lists.isEmpty(orders)}">
+        <form style=" position:relative;  top 180px; margin-top:50px; width: 800px;" th:method="POST" th:action="@{/cart}">
+            <input class="btn" style="" type="submit" value="Заказать"/>
+        </form>
+    </div>
+    </div>
+    <a href="/my-orders" class="btn" style="margin-top:50px;">Мои заказы</a>
 </div>
 
 <footer>
     <p>&copy; 2024 Book Store.</p>
 </footer>
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu.style.display === 'flex') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'flex';
+        }
+    }
+</script>
 </body>
 </html>
