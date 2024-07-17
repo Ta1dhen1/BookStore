@@ -6,20 +6,25 @@
     <title th:text="${book.name}">Book Details</title>
     <script>
         function addToCart(personId, bookId, csrfToken) {
-            fetch(`/add-order_${personId}&${bookId}`, {
+            fetch(`/add-order/${personId}/${bookId}`, { // Изменено на новый формат URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 }
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
             .then(data => {
                 if (data === "Item added to cart") {
                     let button = document.getElementById('cartButton');
                     button.innerText = "Перейти в корзину";
                     button.setAttribute('onclick', "window.location.href='/cart'");
-                    button.classList.add('go-to-cart'); // Добавляем класс для плавного перехода
+                    button.classList.add('go-to-cart');
                 }
             })
             .catch(error => console.error('Error:', error));

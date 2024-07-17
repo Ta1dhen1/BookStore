@@ -19,6 +19,7 @@ public class PersonService {
         this.personRepository = personRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
     public List<Person> getUsers(String role) {
         return personRepository.findByRole(role);
     }
@@ -29,6 +30,10 @@ public class PersonService {
     @Transactional
     public void save(Person person){
         person.setPassword(passwordEncoder.encode(person.getPassword()));
+        personRepository.save(person);
+    }
+
+    public void savePerson(Person person) {
         personRepository.save(person);
     }
 

@@ -92,5 +92,19 @@ public class AdminController {
         model.addAttribute("personOrdersMap", personOrdersMap);
         return "admin/users";
     }
+////////////////////////////////////////////////////////////////////
+    @GetMapping("/addAdmin")
+    public String showAllUser(Model model) {
+        List<Person> users = personService.getUsers("ROLE_USER");
+        model.addAttribute("users", users);
+        return "admin/allUsers";
+    }
 
+    @PostMapping("/addAdmin")
+    public String addAdmin(@RequestParam("username") String username) {
+        Person user = personService.getPerson(username).get();
+        user.setRole("ROLE_ADMIN");
+        personService.savePerson(user);
+        return "redirect:/admin/addAdmin";
+    }
 }
