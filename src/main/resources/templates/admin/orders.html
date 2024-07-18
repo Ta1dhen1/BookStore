@@ -201,6 +201,24 @@
             background-color: #343a40;
             color: white;
         }
+                .back-button {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 10%;
+            left: 45%;
+        }
+        .back-button:hover {
+            background-color: #212529;
+        }
     </style>
 </head>
 <body>
@@ -212,7 +230,7 @@
         <div class="dropdown-menu" id="dropdownMenu">
             <div sec:authorize="hasRole('ADMIN')">
                 <div>
-                    <a href="admin/" class="add-book-button">Панель админа</a>
+                    <a href="/admin/" class="add-book-button">Панель админа</a>
                 </div>
             </div>
             <form th:action="@{/logout}" th:method="POST">
@@ -221,7 +239,7 @@
         </div>
     </div>
 </header>
-<a href="/" class="back-button" style="position:relative; left:45%;">Вернуться назад</a>
+<a href="/admin/" class="back-button">Вернуться назад</a>
 
 <div class="container">
     <th:block th:each="entry : ${personOrdersMap}">

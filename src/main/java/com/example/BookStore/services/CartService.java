@@ -48,7 +48,6 @@ public class CartService {
             cart.setQuantity(cart.getQuantity() + 1);
             cart.setTotalPrice(cart.getQuantity() * cart.getBook().getPrice());
         }
-        System.out.println(cart.getQuantity());
         cartRepository.save(cart);
     }
 

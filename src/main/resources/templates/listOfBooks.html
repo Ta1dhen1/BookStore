@@ -129,7 +129,7 @@
         }
         .new-icon1 {
             position: absolute;
-            top: 0;
+            top: -10px;
             right: 0;
             height: 60px;
             width: auto;
@@ -255,17 +255,17 @@
         </div>
     </div>
 </header>
-...
+
 <div class="container">
     <th:block th:each="book : ${bookList}">
         <div class="book-item" style="text-decoration:none; color: #333">
             <a style="text-decoration:none; color:#333;" th:href="@{/{id}(id=${book.id})}" >
                 <div class="new-icon">
                     <img th:src="${book.url}" alt="Book Cover" class="url-class">
-                    <img th:if="${book.novelty}" th:src="@{/images/new.png}" class="new-icon1">
-                    <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
-                    <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
-                    <img style="position:absolute; width:60px; height:auto; bottom: 0;" th:if="${book.rating > 6.66}" th:src="@{/images/excellent_smile.png}">
+                    <img th:if="${book.novelty}" th:src="@{/images/new.png}" class="new-icon1" >
+                    <img style="position:absolute; width:60px; height:auto; bottom: -10px;" th:if="${book.rating > 0.0 and book.rating <= 3.33}" th:src="@{/images/bad_smile.png}">
+                    <img style="position:absolute; width:60px; height:auto; bottom:-10px;" th:if="${book.rating > 3.33 and book.rating <= 6.66}" th:src="@{/images/fair_smile.png}">
+                    <img style="position:absolute; width:60px; height:auto; bottom: -10px;" th:if="${book.rating > 6.66}" th:src="@{/images/excellent_smile.png}">
                 </div>
                 <div class="book-info">
                     <div class="label"><span class="label"></span> <span th:text="${book.name}"></span></div>
@@ -280,7 +280,7 @@
                     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
                     <button class="button cartButton" style="width:120px;"
                             th:data-person-id="${person_id}"
-                            th:data-book-id="${book.id}">
+                            th:data-book-id="${book.getId()}">
                         В корзину
                     </button>
                 </div>
@@ -289,27 +289,12 @@
     </th:block>
 </div>
 
-<div sec:authorize="hasRole('USER')">
-    <a href="/cart" class="fixed-cart-button"><i class="gg-shopping-cart"></i></a>
-</div>
 <footer>
     <p>&copy; 2024 Book Store.</p>
 </footer>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const cartButtons = document.querySelectorAll('.cartButton');
-
-        cartButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const personId = this.getAttribute('data-person-id');
-                const bookId = this.getAttribute('data-book-id');
-                addToCart(personId, bookId, csrfToken, this);
-            });
-        });
-    });
-
-    function addToCart(personId, bookId, csrfToken, button) {
+    function addToCart(personId, bookId, csrfToken) {
         fetch(`/add-order/${personId}/${bookId}`, {
             method: 'POST',
             headers: {
@@ -325,13 +310,32 @@
         })
         .then(data => {
             if (data === "Item added to cart") {
+                let button = document.querySelector(`.cartButton[data-book-id='${bookId}']`);
                 button.innerText = "Перейти в корзину";
-                button.setAttribute('onclick', "window.location.href='/cart'");
                 button.classList.add('go-to-cart');
+                button.removeEventListener('click', addToCartClickListener);
+                button.addEventListener('click', () => {
+                    window.location.href = '/cart';
+                });
             }
         })
         .catch(error => console.error('Error:', error));
     }
+
+    function addToCartClickListener(event) {
+        const button = event.target;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const personId = button.getAttribute('data-person-id');
+        const bookId = button.getAttribute('data-book-id');
+        addToCart(personId, bookId, csrfToken);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.cartButton');
+        buttons.forEach(button => {
+            button.addEventListener('click', addToCartClickListener);
+        });
+    });
 
     function toggleMenu() {
         const menu = document.getElementById('dropdownMenu');
@@ -341,7 +345,6 @@
             menu.style.display = 'flex';
         }
     }
-
 </script>
 </body>
 </html>
